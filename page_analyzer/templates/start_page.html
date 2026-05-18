@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm p-4 mt-5">
+            <h1 class="display-5 mb-3 text-center">Анализатор страниц</h1>
+            <p class="lead text-muted text-center mb-4">Бесплатная проверка сайтов на SEO-пригодность</p>
+            
+            <form action="/urls" method="POST" class="d-flex gap-2">
+                <input type="url" name="url" class="form-control form-control-lg" placeholder="https://example.com" required>
+                <button type="submit" class="btn btn-primary btn-lg px-4">Проверить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
