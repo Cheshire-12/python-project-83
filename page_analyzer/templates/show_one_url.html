@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div>
+    <h1>Сайт: {{ url.name }}</h1>
+        <table class="table table-bordered mt-1" data-test="url">
+            <tbody>
+                <tr>
+                    <td>ID</td>
+                    <td>{{ url.id }}</td>
+                </tr>
+                <tr class="table-active">
+                    <td>Имя</td>
+                    <td>{{ url.name }}</td>
+                </tr>
+                <tr>
+                    <td>Дата создания</td>
+                    <td>{{ url.created_at.strftime("%Y-%m-%d") }}</td>
+                </tr>
+            </tbody>
+        </table>
+</div>
+<br>
+<div>
+    <h2 class="mb-4 text-">Проверки</h2>
+</div>
+<div>
+    <button type="button" class="btn btn-primary mb-1" data-test="check-url-btn">Запустить проверку</button>
+    <table class="table table-bordered" data-test="url-checks">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Код ответа</td>
+                <td>h1</td>
+                <td>title</td>
+                <td>description</td>
+                <td>Дата создания</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for check in checks %}
+                <tr>
+                    <td>{{ check.id }}</td>
+                    <td>{{ check.created_at.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ check.status_code }}</td>
+                    <td>{{ check.title }}</td>
+                    <td>{{ check.h1 }}</td>
+                    <td>{{ check.description }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

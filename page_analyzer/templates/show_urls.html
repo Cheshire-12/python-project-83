@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Сайты</h1>
+<table class="table table-hover table-striped mt-3" data-test="urls">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Последняя проверка</th>
+            <th>Код ответа</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for url in urls%}
+            <tr>
+                <td>{{ url.id }}</td>
+                <td><a href="{{ url_for("get_one_url", id=url.id) }}">{{ url.name }}</a></td>
+                <td>Пока не готово</td>
+                <td>Пока не готово</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

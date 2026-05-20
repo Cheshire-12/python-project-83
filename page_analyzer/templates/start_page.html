@@ -7,8 +7,24 @@
             <h1 class="display-5 mb-3 text-center">Анализатор страниц</h1>
             <p class="lead text-muted text-center mb-4">Бесплатная проверка сайтов на SEO-пригодность</p>
             
-            <form action="/urls" method="POST" class="d-flex gap-2">
-                <input type="url" name="url" class="form-control form-control-lg" placeholder="https://example.com" required>
+            <form action="{{ url_for('url_new') }}" method="POST" class="d-flex gap-2 align-items-start">
+                <div class="flex-grow-1">
+                    <input 
+                        type="text" 
+                        name="url" 
+                        value="{{ url_data if url_data else '' }}" 
+                        class="form-control form-control-lg {% if errors %}is-invalid{% endif %}" 
+                        placeholder="https://example.com" 
+                        required
+                    >
+                    
+                    {% if errors %}
+                        {% for error in errors %}
+                            <div class="invalid-feedback text-start d-block">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
                 <button type="submit" class="btn btn-primary btn-lg px-4">Проверить</button>
             </form>
         </div>
