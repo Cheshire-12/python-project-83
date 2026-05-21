@@ -67,4 +67,20 @@ def get_one_url(id):
     if not url_data:
         flash("Страница не найдена!", "danger")
         return redirect(url_for("get_urls"))
-    return render_template("show_one_url.html", url=url_data)
+    checks = repo.get_analyze_results(id)
+    return render_template("show_one_url.html", url=url_data, checks=checks)
+
+@app.post("/urls/<int:id>/checks")
+def url_check(id):
+    check_data = request.form.to_dict()
+    errors = []
+    # В будущей, более полной версии, здесь будет код для проверки URL и получения данных для анализа
+    if errors:
+        flash("Произошла ошибка при проверке", "danger")
+        return redirect(url_for("get_one_url", id=id))
+
+    repo.create_check(id, check_data)
+    
+    flash("Страница успешно проверена", "success")
+    return redirect(url_for("get_one_url", id=id))
+
