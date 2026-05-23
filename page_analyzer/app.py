@@ -32,7 +32,7 @@ def validator(url):
 
 def analyze_url(url):
     try:
-        r = requests.get(url, timeout=3)
+        r = requests.get(url, timeout=5)
         r.raise_for_status()
         return r.status_code, r.text
     except requests.RequestException:
