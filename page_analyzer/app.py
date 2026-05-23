@@ -1,5 +1,6 @@
 from page_analyzer.analyze_repo import AnalyzeRepo
 import validators
+import requests
 from urllib.parse import urlparse
 from psycopg2.pool import ThreadedConnectionPool
 from dotenv import load_dotenv
@@ -29,6 +30,14 @@ def validator(url):
         errors.append("Некорректный URL")
     return errors
 
+def analyze_url(url):
+    try:
+        r = requests.get(url, timeout=3)
+        r.raise_for_status()
+        return r.status_code, r.text
+    except requests.RequestException:
+        return None, None
+        
 @app.route("/")
 def index():
     return render_template("start_page.html")
@@ -72,14 +81,26 @@ def get_one_url(id):
 
 @app.post("/urls/<int:id>/checks")
 def url_check(id):
-    check_data = request.form.to_dict()
-    errors = []
-    # В будущей, более полной версии, здесь будет код для проверки URL и получения данных для анализа
-    if errors:
+    url_data = repo.get_one_url(id)
+    
+    if not url_data:
+        flash("Страница не найдена", "danger")
+        return redirect(url_for("get_urls"))
+    
+    status_code, content = analyze_url(url_data['name'])
+    
+    if status_code is None:
         flash("Произошла ошибка при проверке", "danger")
         return redirect(url_for("get_one_url", id=id))
-
-    repo.create_check(id, check_data)
+    
+    gathered_data = {
+        "status_code": status_code,
+        "h1": None,
+        "title": None,
+        "description": None
+    }
+    
+    repo.create_check(id, gathered_data)
     
     flash("Страница успешно проверена", "success")
     return redirect(url_for("get_one_url", id=id))

@@ -17,7 +17,7 @@
                 <td>{{ url.id }}</td>
                 <td><a href="{{ url_for('get_one_url', id=url.id) }}">{{ url.name }}</a></td>
                 <td>{{ url.last_check_date.strftime("%Y-%m-%d") if url.last_check_date else "Нет проверок" }}</td>
-                <td>In development</td>
+                <td>{{ url.last_status_code if url.last_status_code else "Нет проверок" }}</td>
             </tr>
         {% endfor %}
     </tbody>
