@@ -24,6 +24,7 @@ class AnalyzeRepo():
             self.pool.putconn(conn)
 
     def get_content(self):
+        """Получение списка всех URL и их последних проверок"""
         with self._get_conn() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
                 query = """
@@ -40,6 +41,7 @@ class AnalyzeRepo():
                 return [dict(row) for row in cur.fetchall()]
 
     def get_one_url(self, id):
+        """Получение информации о конкретном URL"""
         with self._get_conn() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
                 cur.execute("SELECT * FROM urls WHERE id = %s", (id,))
@@ -47,6 +49,7 @@ class AnalyzeRepo():
                 return dict(row) if row else None
     
     def check_url_exists(self, url):
+        """Проверка существования URL"""
         with self._get_conn() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
                 cur.execute("SELECT * FROM urls WHERE name = %s", (url,))
@@ -54,17 +57,20 @@ class AnalyzeRepo():
                 return dict(row) if row else None
 
     def create(self, url_data):
+        """Создание новой записи URL и возврат ее ID"""
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
                 cur.execute("INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING id", (url_data.get("url"), datetime.now()))
                 return cur.fetchone()[0]
 
     def delete(self, id):
+        """Удаление записи URL"""
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM urls WHERE id = %s", (id,))
     
     def create_check(self, id, gathered_data):
+        """Создание новой записи проверки URL"""
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -80,6 +86,7 @@ class AnalyzeRepo():
                 )
 
     def get_analyze_results(self, url_id):
+        """Получение всех проверок для конкретного URL"""
         with self._get_conn() as conn:
             from psycopg2.extras import DictCursor
             with conn.cursor(cursor_factory=DictCursor) as cur:
