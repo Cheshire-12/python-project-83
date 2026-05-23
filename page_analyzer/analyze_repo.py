@@ -64,17 +64,17 @@ class AnalyzeRepo():
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM urls WHERE id = %s", (id,))
     
-    def create_check(self, id, check_data):
+    def create_check(self, id, gathered_data):
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES (%s, %s, %s, %s, %s, %s)",
                     (
                         id,
-                        check_data.get("status_code"),
-                        check_data.get("h1"),
-                        check_data.get("title"),
-                        check_data.get("description"),
+                        gathered_data.get("status_code"),
+                        gathered_data.get("h1"),
+                        gathered_data.get("title"),
+                        gathered_data.get("description"),
                         datetime.now()
                     )
                 )
