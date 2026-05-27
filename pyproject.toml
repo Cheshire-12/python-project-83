@@ -16,5 +16,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pook>=2.1.6",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
     "ruff>=0.15.13",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
 ]

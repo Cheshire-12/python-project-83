@@ -1,6 +1,8 @@
 from contextlib import contextmanager
-from psycopg2.extras import DictCursor
 from datetime import datetime
+
+from psycopg2.extras import DictCursor
+
 
 class AnalyzeRepo():
     def __init__(self, pool) -> None:
@@ -35,7 +37,7 @@ class AnalyzeRepo():
                     url_checks.status_code AS last_status_code
                 FROM urls
                 LEFT JOIN url_checks ON urls.id = url_checks.url_id
-                ORDER BY urls.id, url_checks.created_at DESC;
+                ORDER BY urls.id DESC;
                 """
                 cur.execute(query)
                 return [dict(row) for row in cur.fetchall()]
@@ -52,7 +54,7 @@ class AnalyzeRepo():
         """Проверка существования URL"""
         with self._get_conn() as conn:
             with conn.cursor(cursor_factory=DictCursor) as cur:
-                cur.execute("SELECT * FROM urls WHERE name = %s", (url,))
+                cur.execute("SELECT id FROM urls WHERE name = %s", (url,))
                 row = cur.fetchone()
                 return dict(row) if row else None
 
@@ -60,7 +62,14 @@ class AnalyzeRepo():
         """Создание новой записи URL и возврат ее ID"""
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
-                cur.execute("INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING id", (url_data.get("url"), datetime.now()))
+                cur.execute(
+                    """
+                    INSERT INTO urls (name, created_at)
+                    VALUES (%s, %s)
+                    RETURNING id
+                    """,
+                    (url_data.get("url"), datetime.now())
+                    )
                 return cur.fetchone()[0]
 
     def delete(self, id):
@@ -74,7 +83,11 @@ class AnalyzeRepo():
         with self._get_conn(commit=True) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES (%s, %s, %s, %s, %s, %s)",
+                    """
+                    INSERT INTO url_checks
+                    (url_id, status_code, h1, title, description, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """,
                     (
                         id,
                         gathered_data.get("status_code"),

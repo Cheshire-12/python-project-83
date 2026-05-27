@@ -1,19 +1,15 @@
-from page_analyzer.analyze_repo import AnalyzeRepo
-import validators
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urlparse
-from psycopg2.pool import ThreadedConnectionPool
-from dotenv import load_dotenv
 import os
-from flask import (
-    Flask,
-    render_template,
-    request,
-    flash,
-    redirect,
-    url_for
-)
+from urllib.parse import urlparse
+
+import requests
+import validators
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from flask import Flask, flash, redirect, render_template, request, url_for
+from psycopg2.pool import ThreadedConnectionPool
+
+from page_analyzer.analyze_repo import AnalyzeRepo
+
 app = Flask(__name__)
 
 load_dotenv()
@@ -21,9 +17,10 @@ load_dotenv()
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-conn = ThreadedConnectionPool(1,10, dsn=DATABASE_URL)
+conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
 
 repo = AnalyzeRepo(conn)
+
 
 def validator(url):
     """Вспомогательная функция валидации URL адресса"""
@@ -31,6 +28,7 @@ def validator(url):
     if not url or not validators.url(url) or len(url) > 255:
         errors.append("Некорректный URL")
     return errors
+
 
 def analyze_url(url):
     """Вспомогательная функция для получения статуса и контента страницы"""
@@ -41,14 +39,17 @@ def analyze_url(url):
     except requests.RequestException:
         return None, None
         
+
 @app.route("/")
 def index():
     return render_template("start_page.html")
+
 
 @app.get("/urls")
 def get_urls():
     urls_data = repo.get_content()
     return render_template("show_urls.html", urls=urls_data)
+
 
 @app.post("/urls")
 def url_new():
@@ -57,7 +58,9 @@ def url_new():
     errors = validator(url_data)
     if errors:
         flash("Некорректный URL. Пожалуйста, введите правильный URL.", "danger")
-        return render_template("start_page.html", url_data=url_data, errors=errors), 422
+        return render_template(
+            "start_page.html", url_data=url_data, errors=errors
+            ), 422
     
     parsed_url = urlparse(url_data)
     normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -73,6 +76,7 @@ def url_new():
     flash("Страница успешно добавлена!", "success")
     return redirect(url_for("get_one_url", id=new_id))
 
+
 @app.route("/urls/<int:id>", methods=["GET"])
 def get_one_url(id):
     url_data = repo.get_one_url(id)
@@ -81,6 +85,7 @@ def get_one_url(id):
         return redirect(url_for("get_urls"))
     checks = repo.get_analyze_results(id)
     return render_template("show_one_url.html", url=url_data, checks=checks)
+
 
 @app.post("/urls/<int:id>/checks")
 def url_check(id):
@@ -108,7 +113,7 @@ def url_check(id):
     title = title_tag.text.strip() if title_tag else ''
     
     meta_desc = soup.find('meta', attrs={'name': 'description'})
-    description = meta_desc.get('content', '').strip() if meta_desc else '' # type: ignore
+    description = meta_desc.get('content', '').strip() if meta_desc else ''  # type: ignore
     
     gathered_data = {
         "status_code": status_code,
@@ -121,4 +126,3 @@ def url_check(id):
     
     flash("Страница успешно проверена", "success")
     return redirect(url_for("get_one_url", id=id))
-
