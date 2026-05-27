@@ -20,10 +20,12 @@ class AnalyzeRepo():
             if commit:
                 conn.commit()
         except Exception:
-            conn.rollback()
+            if conn and not conn.closed:
+                conn.rollback()
             raise
         finally:
-            self.pool.putconn(conn)
+            if conn:
+                self.pool.putconn(conn, close=bool(conn.closed))
 
     def get_content(self):
         """Получение списка всех URL и их последних проверок"""
