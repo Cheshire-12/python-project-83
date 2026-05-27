@@ -1,3 +1,4 @@
+import psycopg2
 from contextlib import contextmanager
 from datetime import datetime
 
@@ -15,17 +16,21 @@ class AnalyzeRepo():
         Автоматически берет соединение из пула и возвращает его обратно.
         """
         conn = self.pool.getconn()
+        force_close = False
         try:
             yield conn
             if commit:
                 conn.commit()
+        except (psycopg2.OperationalError, psycopg2.InterfaceError):
+            force_close = True
+            raise
         except Exception:
             if conn and not conn.closed:
                 conn.rollback()
             raise
         finally:
             if conn:
-                self.pool.putconn(conn, close=bool(conn.closed))
+                self.pool.putconn(conn, close=force_close or bool(conn.closed))
 
     def get_content(self):
         """Получение списка всех URL и их последних проверок"""
