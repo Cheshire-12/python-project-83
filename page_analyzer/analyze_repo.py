@@ -1,7 +1,7 @@
-import psycopg2
 from contextlib import contextmanager
 from datetime import datetime
 
+import psycopg2
 from psycopg2.extras import DictCursor
 
 
