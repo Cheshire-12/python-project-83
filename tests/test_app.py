@@ -1,9 +1,13 @@
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pook
+import psycopg2.pool
 import pytest
 
-from page_analyzer.app import app
+psycopg2.pool.ThreadedConnectionPool = MagicMock()
+
+from page_analyzer.app import app  # noqa: E402
 
 
 @pytest.fixture()

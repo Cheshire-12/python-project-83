@@ -3,7 +3,7 @@ name: Python CI
 on: [push, pull_request]
 
 jobs:
-  lint:
+  Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
