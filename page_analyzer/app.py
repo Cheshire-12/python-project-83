@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 load_dotenv()
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # NOSONAR
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
@@ -40,7 +40,7 @@ def analyze_url(url):
         return None, None
         
 
-@app.route("/")
+@app.get("/")
 def index():
     return render_template("start_page.html")
 

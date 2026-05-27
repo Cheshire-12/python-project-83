@@ -24,7 +24,7 @@ def client():
 def mock_repo(monkeypatch):
     class MockRepo:
         def get_one_url(self, id): return None
-        def create_check(self, id, data): pass
+        def create_check(self, id, data): return None
         def check_url_exists(self, url): return None
         def create(self, data): return 1
         def get_content(self): return []
