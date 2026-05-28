@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 load_dotenv()
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  #NOSONAR
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # NOSONAR
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
