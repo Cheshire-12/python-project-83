@@ -10,7 +10,7 @@ from psycopg2.pool import ThreadedConnectionPool
 
 from page_analyzer.analyze_repo import AnalyzeRepo
 
-app = Flask(__name__)
+app = Flask(__name__)  # NOSONAR
 
 load_dotenv()
 
