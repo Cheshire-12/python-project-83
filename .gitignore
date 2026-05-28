@@ -4,3 +4,4 @@ __pycache__/
 .python-version
 .ruff_cache
 .coverage
+coverage.xml
