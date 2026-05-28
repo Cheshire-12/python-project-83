@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 load_dotenv()
 
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # NOSONAR
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  #NOSONAR
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
@@ -77,7 +77,7 @@ def url_new():
     return redirect(url_for("get_one_url", id=new_id))
 
 
-@app.route("/urls/<int:id>", methods=["GET"])
+@app.get("/urls/<int:id>")
 def get_one_url(id):
     url_data = repo.get_one_url(id)
     if not url_data:
