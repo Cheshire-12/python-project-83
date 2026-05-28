@@ -26,8 +26,7 @@ jobs:
       - name: Run coverage
         run: make coverage
       
-      - name: SonarQube scan
-        uses: sonarsource /sonarqube-scan-acyion@v4
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}$
-
+      - name: SonarQube Cloud Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
