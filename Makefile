@@ -12,6 +12,9 @@ test:
 lint:
 	uv run ruff check
 
+coverage:
+	uv run pytest --cov=page_analyzer --cov-report=xml
+
 start:
 	uv run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
 

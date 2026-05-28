@@ -7,5 +7,8 @@ This is a website that analyzes specified pages for SEO suitability, similar to 
 | :--- | :--- |
 | **Hexlet tests**| [![Actions Status](https://github.com/Cheshire-12/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Cheshire-12/python-project-83/actions)|
 | **Pytest and linter** | [![Python CI](https://github.com/Cheshire-12/python-project-83/actions/workflows/python-ci.yaml/badge.svg?branch=main)](https://github.com/Cheshire-12/python-project-83/actions/workflows/python-ci.yaml) |
+| **Quality Gate Status** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Cheshire-12_python-project-83&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Cheshire-12_python-project-83) |
+| **Code Smells** | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Cheshire-12_python-project-83&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Cheshire-12_python-project-83) |
+| **Coverage** | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Cheshire-12_python-project-83&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Cheshire-12_python-project-83) |
 
 ### [View the running application](https://python-project-83-qwot.onrender.com)
