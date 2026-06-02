@@ -1,5 +1,6 @@
 from page_analyzer.parser import parse_html
 
+
 def test_parse_html():
     """Проверка извлечения h1, title и description из HTML."""
     html_content = """
@@ -19,6 +20,7 @@ def test_parse_html():
     assert result['title'] == "Test Title"
     assert result['description'] == "Test Description"
 
+
 def test_parse_html_missing_tags():
     """Проверка обработки отсутствующих тегов."""
     html_content = """
@@ -32,6 +34,7 @@ def test_parse_html_missing_tags():
     assert result['h1'] == ""
     assert result['title'] == ""
     assert result['description'] == ""
+
 
 def test_parse_html_partial_tags():
     """Проверка обработки частично заполненных тегов."""
