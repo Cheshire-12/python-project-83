@@ -1,14 +1,12 @@
 import os
-from urllib.parse import urlparse
 
-import requests
-import validators
-from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 from psycopg2.pool import ThreadedConnectionPool
 
 from page_analyzer.analyze_repo import AnalyzeRepo
+from page_analyzer.parser import parse_html
+from page_analyzer.utilits import analyze_url, get_normalized_url, validator
 
 app = Flask(__name__)  # NOSONAR
 
@@ -21,24 +19,6 @@ conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
 
 repo = AnalyzeRepo(conn)
 
-
-def validator(url):
-    """Вспомогательная функция валидации URL адресса"""
-    errors = []
-    if not url or not validators.url(url) or len(url) > 255:
-        errors.append("Некорректный URL")
-    return errors
-
-
-def analyze_url(url):
-    """Вспомогательная функция для получения статуса и контента страницы"""
-    try:
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        return r.status_code, r.text
-    except requests.RequestException:
-        return None, None
-        
 
 @app.get("/")
 def index():
@@ -62,8 +42,7 @@ def url_new():
             "start_page.html", url_data=url_data, errors=errors
             ), 422
     
-    parsed_url = urlparse(url_data)
-    normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    normalized_url = get_normalized_url(url_data)
     
     existing_url = repo.check_url_exists(normalized_url)
     
@@ -105,21 +84,13 @@ def url_check(id):
         flash("Не удалось получить содержимое страницы", "danger")
         return redirect(url_for("get_one_url", id=id))
     
-    soup = BeautifulSoup(content, "html.parser")
-    h1_tag = soup.find('h1')
-    h1 = h1_tag.text.strip() if h1_tag else ''
-    
-    title_tag = soup.find('title')
-    title = title_tag.text.strip() if title_tag else ''
-    
-    meta_desc = soup.find('meta', attrs={'name': 'description'})
-    description = meta_desc.get('content', '').strip() if meta_desc else ''  # type: ignore
-    
+    parsed_data = parse_html(content)
+  
     gathered_data = {
         "status_code": status_code,
-        "h1": h1,
-        "title": title,
-        "description": description
+        "h1": parsed_data['h1'],
+        "title": parsed_data['title'],
+        "description": parsed_data['description']
     }
     
     repo.create_check(id, gathered_data)
