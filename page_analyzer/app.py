@@ -6,7 +6,7 @@ from psycopg2.pool import ThreadedConnectionPool
 
 from page_analyzer.analyze_repo import AnalyzeRepo
 from page_analyzer.parser import parse_html
-from page_analyzer.utilits import analyze_url, get_normalized_url, validator
+from page_analyzer.utilities import analyze_url, get_normalized_url, validator
 
 app = Flask(__name__)  # NOSONAR
 
@@ -15,9 +15,9 @@ load_dotenv()
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # NOSONAR
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-conn = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
+pool = ThreadedConnectionPool(1, 10, dsn=DATABASE_URL)
 
-repo = AnalyzeRepo(conn)
+repo = AnalyzeRepo(pool)
 
 
 @app.get("/")

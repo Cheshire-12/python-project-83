@@ -12,7 +12,7 @@ def validator(url):
     return errors
 
 
-def analyze_url(url):
+def analyze_url(url: str):
     """Вспомогательная функция для получения статуса и контента страницы"""
     try:
         r = requests.get(url, timeout=5)

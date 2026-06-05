@@ -1,4 +1,4 @@
-from page_analyzer.utilits import get_normalized_url, validator
+from page_analyzer.utilities import get_normalized_url, validator
 
 
 # --- ТЕСТЫ ВАЛИДАТОРА URL ---

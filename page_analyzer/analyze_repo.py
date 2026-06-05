@@ -105,10 +105,9 @@ class AnalyzeRepo():
                     )
                 )
 
-    def get_analyze_results(self, url_id):
+    def get_analyze_results(self, url_id) -> list[dict]:
         """Получение всех проверок для конкретного URL"""
         with self._get_conn() as conn:
-            from psycopg2.extras import DictCursor
             with conn.cursor(cursor_factory=DictCursor) as cur:
                 cur.execute(
                     "SELECT * FROM url_checks WHERE url_id = %s ORDER BY id",

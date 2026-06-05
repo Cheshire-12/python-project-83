@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 
-def parse_html(html_content):
+def parse_html(html_content: str) -> dict[str, str]:
     """Извлекает h1, title и description из HTML-контента"""
     soup = BeautifulSoup(html_content, 'html.parser')
     
